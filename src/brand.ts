@@ -386,14 +386,14 @@ export const brand: Brand = {
     title: 'The finishing',
     titleAccent: 'touch.',
     intro:
-      'Bukan sekadar pemanis tampilan, tapi inti dari gayamu. Temukan koleksi tas dan aksesori Ji&Co yang bikin penampilanmu otomatis keliatan lebih matang dan berkarakter.',
+      'Sentuhan akhir yang menghidupkan kisah kecantikanmu. Jelajahi rangkaian aksesori Ji&Co yang merajut pesona feminin, membuat setiap penampilanmu semakin hidup, berkarakter, dan penuh arti.',
     meta: '8 aksesori — One size',
     railHint: 'Geser untuk melihat semua',
     prevLabel: 'Aksesori sebelumnya',
     nextLabel: 'Aksesori berikutnya',
     bundleEyebrow: 'Paket Mix & Match',
-    bundleTitle: 'Satu look,',
-    bundleTitleAccent: 'langsung lengkap.',
+    bundleTitle: 'Merangkai gaya,',
+    bundleTitleAccent: 'dalam satu sentuhan.',
     bundleIntro:
       'Tiga set terkurasi dari pieces favorit dan aksesorinya. Pilih set, tentukan ukuran pakaian, lalu pesan lewat WhatsApp.',
     bundleItemsLabel: 'Isi paket',
@@ -632,11 +632,11 @@ export const brand: Brand = {
   },
   story: {
     eyebrow: 'Our Story',
-    title: 'Lahir dari pertemanan,',
-    titleAccent: 'tumbuh dari gaya.',
+    title: 'Dari pertemanan,',
+    titleAccent: 'menjadi keanggunan.',
     paragraphs: [
-      'Ji&Co berawal dari dua sahabat yang memiliki minat yang sama besar pada fashion. Nama Ji&Co adalah cara mereka menyatukan dua nama, dua selera, dan satu visi.',
-      'Kami ingin menghadirkan fashion kekinian yang menjangkau banyak kalangan perempuan: model yang simple, sederhana, namun tetap trendi. Potongan dirancang dengan hati-hati agar nyaman dan pas di berbagai bentuk tubuh, untuk menemani hari-hari nyata—bukan hanya satu momen istimewa.',
+      'Berawal dari perpaduan dua gagasan dan kecintaan mendalam pada estetika, Ji&Co hadir sebagai wujud penghormatan bagi keindahan perempuan. Kami percaya setiap individu menyimpan pesona unik yang selayaknya dirayakan.',
+      'Koleksi kami dirancang bukan untuk mengubah siapa dirimu, melainkan untuk menyempurnakan keanggunan yang telah ada di dalam dirimu. Melalui jahitan yang cermat dan siluet yang membelai tubuh dengan sempurna, setiap busana dipersiapkan untuk menemani hari-hari nyatamu dengan penuh rasa percaya diri.',
     ],
     quote:
       'Elegan bukan tentang menjadi pusat perhatian. Elegan adalah saat kamu merasa nyaman menjadi diri sendiri.',
