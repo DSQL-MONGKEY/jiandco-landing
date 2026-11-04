@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../jiandco-api"
+		},
+		{
+			"path": "../jiandco-dashboard"
 		}
 	],
 	"settings": {}

@@ -188,3 +188,49 @@ export function CheckIcon({ size = 18, className }: IconProps) {
     </svg>
   )
 }
+
+export function BagIcon({ size = 18, className }: IconProps) {
+  return (
+    <svg {...base(size)} className={className} fill="none">
+      <path
+        d="M5 8.5h14l-1 11.5H6L5 8.5Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 9V7a3 3 0 0 1 6 0v2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+export function MinusIcon({ size = 14, className }: IconProps) {
+  return (
+    <svg {...base(size)} className={className} fill="none">
+      <path
+        d="M5 12h14"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+export function TrashIcon({ size = 16, className }: IconProps) {
+  return (
+    <svg {...base(size)} className={className} fill="none">
+      <path
+        d="M4 7h16M9 7V5h6v2m-8 0 1 13h8l1-13M10 11v5m4-5v5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
