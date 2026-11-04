@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { brand, type FooterColumn } from '../brand'
 import {
   ArrowUp,
@@ -79,18 +80,31 @@ export default function Footer() {
               </h2>
               {column.links ? (
                 <ul className="flex flex-col gap-[0.65rem]">
-                  {column.links.map((link) => (
-                    <li key={link.label}>
-                      <a
-                        className="text-[0.82rem] leading-[1.6] text-main/65 transition-colors hover:text-secondary focus-visible:outline-main"
-                        href={link.href}
-                        target={link.external ? '_blank' : undefined}
-                        rel={link.external ? 'noreferrer' : undefined}
-                      >
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
+                  {column.links.map((link) =>
+                    link.external ||
+                    link.href.startsWith('http') ||
+                    link.href.startsWith('mailto:') ? (
+                      <li key={link.label}>
+                        <a
+                          className="text-[0.82rem] leading-[1.6] text-main/65 transition-colors hover:text-secondary focus-visible:outline-main"
+                          href={link.href}
+                          target={link.external ? '_blank' : undefined}
+                          rel={link.external ? 'noreferrer' : undefined}
+                        >
+                          {link.label}
+                        </a>
+                      </li>
+                    ) : (
+                      <li key={link.label}>
+                        <Link
+                          className="text-[0.82rem] leading-[1.6] text-main/65 transition-colors hover:text-secondary focus-visible:outline-main"
+                          to={link.href}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ),
+                  )}
                 </ul>
               ) : (
                 <ul className="flex flex-col gap-[0.65rem]">
@@ -121,13 +135,13 @@ export default function Footer() {
               {footer.creditLabel}
             </a>
           </p>
-          <a
+          <Link
             className="inline-flex items-center gap-[0.45rem] text-[0.56rem] font-semibold tracking-[0.14em] text-main/75 uppercase transition-colors hover:text-secondary focus-visible:outline-main"
-            href="#home"
+            to="/"
           >
             {footer.backToTop}
             <ArrowUp size={12} />
-          </a>
+          </Link>
         </div>
       </div>
 

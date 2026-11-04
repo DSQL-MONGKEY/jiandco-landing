@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { brand } from '../brand'
 import { ArrowRight, ArrowUpRight } from './Icons'
 import Reveal from './Reveal'
@@ -38,10 +39,10 @@ export default function BlushEdit() {
           </ul>
 
           <div className="mt-[2.1rem] flex flex-wrap items-center gap-[1.6rem]">
-            <a className="btn btn-brand min-h-12" href={edit.primaryCta.href}>
+            <Link className="btn btn-brand min-h-12" to={edit.primaryCta.href}>
               {edit.primaryCta.label}
               <ArrowUpRight size={14} />
-            </a>
+            </Link>
             <a className="text-link" href={edit.secondaryCta.href}>
               {edit.secondaryCta.label}
               <ArrowRight size={14} />

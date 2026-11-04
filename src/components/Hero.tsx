@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { brand } from '../brand'
 import { ArrowRight, ArrowUpRight } from './Icons'
 
@@ -23,10 +24,10 @@ export default function Hero() {
           </p>
 
           <div className="mt-[2.1rem] flex animate-rise flex-wrap items-center gap-[1.6rem] [animation-delay:280ms] motion-reduce:animate-none max-sm:gap-[1.1rem]">
-            <a className="btn btn-brand min-h-12" href={hero.primaryCta.href}>
+            <Link className="btn btn-brand min-h-12" to={hero.primaryCta.href}>
               {hero.primaryCta.label}
               <ArrowUpRight size={14} />
-            </a>
+            </Link>
             <a className="text-link" href={hero.secondaryCta.href}>
               {hero.secondaryCta.label}
               <ArrowRight size={14} />

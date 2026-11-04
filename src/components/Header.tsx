@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { brand } from '../brand'
 import { CloseIcon, InstagramIcon, MenuIcon } from './Icons'
 import Wordmark from './Wordmark'
@@ -74,26 +75,26 @@ export default function Header() {
         }`}
       >
         <div className="container-page grid h-[4.75rem] grid-cols-[1fr_auto_1fr] items-center gap-6 max-[960px]:grid-cols-[1fr_auto] max-sm:h-[4.25rem]">
-          <a
+          <Link
             className="justify-self-start"
-            href="#home"
+            to="/"
             aria-label={`${brand.name} — kembali ke atas`}
           >
             <Wordmark className="text-[1.85rem]" />
-          </a>
+          </Link>
 
           <nav
             className="hidden items-center gap-[clamp(1.1rem,2.2vw,2.2rem)] min-[961px]:flex"
             aria-label="Navigasi utama"
           >
             {brand.nav.map((item) => (
-              <a
+              <Link
                 key={item.href}
-                href={item.href}
+                to={item.href}
                 className="relative py-1.5 text-[0.61rem] font-semibold tracking-[0.16em] uppercase after:absolute after:inset-x-0 after:bottom-0.5 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100 focus-visible:after:scale-x-100"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -107,12 +108,12 @@ export default function Header() {
             >
               <InstagramIcon size={16} />
             </a>
-            <a
+            <Link
               className="btn btn-brand hidden min-h-10 text-[0.58rem] min-[641px]:inline-flex"
-              href={brand.header.ctaHref}
+              to={brand.header.ctaHref}
             >
               {brand.header.ctaLabel}
-            </a>
+            </Link>
             <button
               ref={triggerRef}
               className="grid size-11 place-items-center rounded-full border border-line bg-transparent min-[961px]:hidden"
@@ -155,28 +156,28 @@ export default function Header() {
             aria-label="Navigasi mobile"
           >
             {brand.nav.map((item, index) => (
-              <a
+              <Link
                 className="flex items-baseline gap-4 border-b border-line py-2.5 font-display text-[clamp(2.2rem,9vw,3.5rem)] leading-[1.05] tracking-[-0.03em]"
                 key={item.href}
-                href={item.href}
+                to={item.href}
                 onClick={() => setOpen(false)}
               >
                 <span className="font-body text-[0.58rem] tracking-[0.16em] text-muted">
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
           <div className="container-page flex shrink-0 flex-col gap-6 pb-8">
-            <a
+            <Link
               className="btn btn-brand min-h-12"
-              href={brand.header.ctaHref}
+              to={brand.header.ctaHref}
               onClick={() => setOpen(false)}
             >
               {brand.header.ctaLabel}
-            </a>
+            </Link>
             <div className="flex flex-wrap gap-5 text-[0.72rem] text-muted">
               <a
                 href={brand.contact.instagramUrl}
