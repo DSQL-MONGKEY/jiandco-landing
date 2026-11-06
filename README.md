@@ -1,32 +1,30 @@
-# React + TypeScript + Vite
+# Ji&Co Landing & Catalog
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Vite + React landing page and public catalog for Ji&Co.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+cp .env.example .env.local
+bun install
+bun run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+```env
+VITE_API_BASE_URL=http://localhost:2900/api/v1
+```
+
+The catalog, product detail, cart, and checkout use the Jiandco Go API. Dashboard admin edits are reflected on the public catalog; only products with status `Active` are shown.
+
+## Deployment
+
+Lihat [docs/deployment.md](docs/deployment.md) untuk build Docker, nginx, CI/CD GHCR, dan deployment VPS rjm.
+
+## Scripts
+
+```bash
+bun run dev
+bun run build
+bun run preview
+bun run lint
+```

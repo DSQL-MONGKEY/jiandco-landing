@@ -4,7 +4,8 @@ import Footer from '../components/Footer'
 import { MinusIcon, PlusIcon, TrashIcon } from '../components/Icons'
 import Seo from '../components/Seo'
 import ShopHeader from '../components/shop/ShopHeader'
-import { getProduct, useCart } from '../context/CartContext'
+import { useCart } from '../context/CartContext'
+import { resolveMediaUrl } from '../lib/api'
 
 export default function CartPage() {
   const {
@@ -56,9 +57,6 @@ export default function CartPage() {
             <div className="mt-10 grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16">
               <div className="border-t border-line">
                 {lines.map((line) => {
-                  const product = getProduct(line.productId)
-                  if (!product) return null
-
                   return (
                     <div
                       className="flex gap-4 border-b border-line py-5 sm:gap-6"
@@ -66,29 +64,29 @@ export default function CartPage() {
                     >
                       <Link
                         className="w-24 shrink-0 overflow-hidden bg-main sm:w-28"
-                        to={`/catalog/${product.slug}`}
+                        to={`/catalog/${line.slug}`}
                       >
                         <img
                           className="aspect-[3/4] h-full w-full object-cover"
-                          src={product.images[0].src}
-                          alt={product.images[0].alt}
+                          src={resolveMediaUrl(line.image)}
+                          alt={line.name}
                         />
                       </Link>
                       <div className="flex min-w-0 flex-1 flex-col">
                         <div className="flex items-start justify-between gap-4">
                           <div>
                             <p className="text-[0.54rem] tracking-[0.14em] text-muted uppercase">
-                              {product.color} · Size {line.size}
+                              {line.color} · Size {line.size}
                             </p>
                             <Link
                               className="mt-1 font-display text-[1.35rem] leading-[1.1] hover:text-accent"
-                              to={`/catalog/${product.slug}`}
+                              to={`/catalog/${line.slug}`}
                             >
-                              {product.name}
+                              {line.name}
                             </Link>
                           </div>
                           <p className="shrink-0 text-[0.75rem] font-semibold">
-                            {formatPrice(product.whatsappPrice * line.quantity)}
+                            {formatPrice(line.whatsappPrice * line.quantity)}
                           </p>
                         </div>
                         <div className="mt-auto flex items-center justify-between gap-4 pt-4">
@@ -130,7 +128,7 @@ export default function CartPage() {
                             className="grid size-8 place-items-center text-muted transition-colors hover:text-accent"
                             type="button"
                             onClick={() => removeItem(line.productId, line.size)}
-                            aria-label={`Hapus ${product.name}`}
+                            aria-label={`Hapus ${line.name}`}
                           >
                             <TrashIcon size={15} />
                           </button>

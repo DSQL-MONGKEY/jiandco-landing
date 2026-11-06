@@ -1,69 +1,90 @@
-import { useState } from 'react'
-import {
-  Link,
-  Navigate,
-  useNavigate,
-  useParams,
-} from 'react-router-dom'
-import { brand, formatPrice } from '../brand'
-import { collections, getProduct } from '../catalog'
-import Footer from '../components/Footer'
-import { ArrowLeft, MinusIcon, PlusIcon, WhatsAppIcon } from '../components/Icons'
-import Seo from '../components/Seo'
-import PromoBanner from '../components/shop/PromoBanner'
-import ShopHeader from '../components/shop/ShopHeader'
-import { useCart } from '../context/CartContext'
+import { useState } from "react";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { brand, formatPrice } from "../brand";
+import { useCatalog } from "../context/CatalogContext";
+import { resolveMediaUrl } from "../lib/api";
+import Footer from "../components/Footer";
+import { ArrowLeft, MinusIcon, PlusIcon, WhatsAppIcon } from "../components/Icons";
+import Seo from "../components/Seo";
+import PromoBanner from "../components/shop/PromoBanner";
+import ShopHeader from "../components/shop/ShopHeader";
+import { useCart } from "../context/CartContext";
 
 export default function ProductPage() {
-  const { slug } = useParams()
-  const product = getProduct(slug ?? '')
-  const navigate = useNavigate()
-  const { addItem } = useCart()
-  const [size, setSize] = useState('M')
-  const [quantity, setQuantity] = useState(1)
-  const [imageIndex, setImageIndex] = useState(0)
-  const [added, setAdded] = useState(false)
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+  const { data, loading, error } = useCatalog();
+  const [size, setSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [imageIndex, setImageIndex] = useState(0);
+  const [added, setAdded] = useState(false);
 
-  if (!product) return <Navigate to="/catalog" replace />
+  if (loading) {
+    return (
+      <>
+        <ShopHeader />
+        <main className="container-page py-16">
+          <div className="h-96 animate-pulse bg-main" />
+        </main>
+      </>
+    );
+  }
 
-  const collection = collections.find((item) => item.id === product.collection)
-  const image = product.images[imageIndex] ?? product.images[0]
-  const saving = product.shopeePrice - product.whatsappPrice
-  const origin = window.location.origin
+  if (error) {
+    return (
+      <>
+        <ShopHeader />
+        <main className="container-page py-16">
+          <p className="text-muted">Gagal memuat produk: {error}</p>
+        </main>
+      </>
+    );
+  }
+
+  const product = data?.products.find((item) => item.slug === slug);
+  if (!product) return <Navigate to="/catalog" replace />;
+
+  const collection = data?.collections.find((item) => item.id === product.collection);
+  const images = product.images;
+  const image = images[imageIndex] ?? images[0];
+  const effectiveSize = product.sizes.includes(size) ? size : (product.sizes[0] ?? "");
+  const saving = product.shopeePrice - product.whatsappPrice;
+  const origin = window.location.origin;
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
+    "@context": "https://schema.org",
+    "@type": "Product",
     name: product.name,
     description: product.description,
-    image: product.images.map((item) => `${origin}${item.src}`),
-    brand: { '@type': 'Brand', name: brand.name },
+    image: product.images.map((item) => resolveMediaUrl(item.src)),
+    brand: { "@type": "Brand", name: brand.name },
     offers: {
-      '@type': 'Offer',
-      priceCurrency: 'IDR',
+      "@type": "Offer",
+      priceCurrency: "IDR",
       price: product.whatsappPrice,
-      availability: 'https://schema.org/InStock',
+      availability: "https://schema.org/InStock",
       url: `${origin}/catalog/${product.slug}`,
     },
-  }
+  };
 
   const handleAdd = () => {
-    addItem(product.id, size, quantity)
-    setAdded(true)
-    window.setTimeout(() => setAdded(false), 2200)
-  }
+    addItem(product, effectiveSize, quantity);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 2200);
+  };
 
   const handleBuyNow = () => {
-    addItem(product.id, size, quantity)
-    navigate('/checkout')
-  }
+    addItem(product, effectiveSize, quantity);
+    navigate("/checkout");
+  };
 
   return (
     <>
       <Seo
         title={`${product.name} — Ji&Co`}
-        description={`${product.name} dari koleksi ${collection?.label}. Tersedia S–XL. Checkout via WhatsApp atau Shopee.`}
+        description={`${product.name} dari koleksi ${collection?.label ?? "Ji&Co"}. Checkout via WhatsApp atau Shopee.`}
         path={`/catalog/${product.slug}`}
-        image={product.images[0]?.src}
+        image={resolveMediaUrl(product.images[0]?.src)}
         type="product"
         jsonLd={jsonLd}
       />
@@ -82,19 +103,23 @@ export default function ProductPage() {
         <section className="container-page grid gap-10 pb-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
           <div>
             <div className="aspect-[3/4] overflow-hidden bg-main">
-              <img
-                className="h-full w-full object-cover"
-                src={image.src}
-                alt={image.alt}
-              />
+              {image ? (
+                <img
+                  className="h-full w-full object-cover"
+                  src={resolveMediaUrl(image.src)}
+                  alt={image.alt ?? product.name}
+                />
+              ) : (
+                <div className="grid h-full w-full place-items-center bg-secondary/40 px-6 text-center text-[0.62rem] tracking-[0.14em] text-muted uppercase">
+                  Gambar produk belum tersedia
+                </div>
+              )}
             </div>
             <div className="mt-3 grid grid-cols-3 gap-3">
               {product.images.map((item, index) => (
                 <button
                   className={`aspect-square overflow-hidden border ${
-                    index === imageIndex
-                      ? 'border-burgundy'
-                      : 'border-transparent'
+                    index === imageIndex ? "border-burgundy" : "border-transparent"
                   }`}
                   key={item.src}
                   type="button"
@@ -103,7 +128,7 @@ export default function ProductPage() {
                 >
                   <img
                     className="h-full w-full object-cover"
-                    src={item.src}
+                    src={resolveMediaUrl(item.src)}
                     alt={item.alt}
                     loading="lazy"
                   />
@@ -114,7 +139,7 @@ export default function ProductPage() {
 
           <div className="lg:sticky lg:top-28 lg:self-start">
             <p className="text-[0.58rem] font-semibold tracking-[0.16em] text-muted uppercase">
-              {collection?.label} · {product.color}
+              {[collection?.label ?? "Ji&Co", product.color].filter(Boolean).join(" · ")}
             </p>
             <h1 className="mt-2 font-display text-[clamp(2.6rem,4.8vw,4.4rem)] leading-[0.98] font-normal tracking-[-0.03em]">
               {product.name}
@@ -138,26 +163,28 @@ export default function ProductPage() {
 
             <div className="mt-7">
               <div className="flex items-center justify-between">
-                <p className="text-[0.58rem] font-semibold tracking-[0.16em] uppercase">
-                  Ukuran
-                </p>
+                <p className="text-[0.58rem] font-semibold tracking-[0.16em] uppercase">Ukuran</p>
                 <span className="text-[0.58rem] text-muted">S–XL</span>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
-                {product.sizes.map((option) => (
-                  <button
-                    className={`grid min-h-11 min-w-12 place-items-center border px-3 text-[0.7rem] transition-colors ${
-                      size === option
-                        ? 'border-burgundy bg-burgundy text-main'
-                        : 'border-line hover:border-burgundy'
-                    }`}
-                    key={option}
-                    type="button"
-                    onClick={() => setSize(option)}
-                  >
-                    {option}
-                  </button>
-                ))}
+                {product.sizes.length === 0 ? (
+                  <p className="text-[0.72rem] text-muted">Ukuran belum tersedia.</p>
+                ) : (
+                  product.sizes.map((option) => (
+                    <button
+                      className={`grid min-h-11 min-w-12 place-items-center border px-3 text-[0.7rem] transition-colors ${
+                        effectiveSize === option
+                          ? "border-burgundy bg-burgundy text-main"
+                          : "border-line hover:border-burgundy"
+                      }`}
+                      key={option}
+                      type="button"
+                      onClick={() => setSize(option)}
+                    >
+                      {option}
+                    </button>
+                  ))
+                )}
               </div>
             </div>
 
@@ -172,9 +199,7 @@ export default function ProductPage() {
                 >
                   <MinusIcon />
                 </button>
-                <span className="grid min-w-9 place-items-center text-[0.8rem]">
-                  {quantity}
-                </span>
+                <span className="grid min-w-9 place-items-center text-[0.8rem]">{quantity}</span>
                 <button
                   className="grid size-11 place-items-center"
                   type="button"
@@ -185,18 +210,20 @@ export default function ProductPage() {
                 </button>
               </div>
               <button
-                className="btn btn-brand min-h-12 flex-1"
+                className="btn btn-brand min-h-12 flex-1 disabled:cursor-not-allowed disabled:opacity-50"
                 type="button"
                 onClick={handleAdd}
+                disabled={!effectiveSize}
               >
-                {added ? 'Ditambahkan' : 'Tambah ke Keranjang'}
+                {added ? "Ditambahkan" : "Tambah ke Keranjang"}
               </button>
             </div>
 
             <button
-              className="btn btn-outline mt-3 min-h-12 w-full"
+              className="btn btn-outline mt-3 min-h-12 w-full disabled:cursor-not-allowed disabled:opacity-50"
               type="button"
               onClick={handleBuyNow}
+              disabled={!effectiveSize}
             >
               Beli Sekarang
             </button>
@@ -206,9 +233,7 @@ export default function ProductPage() {
             </div>
 
             <div className="mt-7 border-t border-line pt-5">
-              <p className="text-[0.58rem] font-semibold tracking-[0.16em] uppercase">
-                Detail
-              </p>
+              <p className="text-[0.58rem] font-semibold tracking-[0.16em] uppercase">Detail</p>
               <ul className="mt-3 flex flex-col gap-1.5 text-[0.8rem] leading-[1.6] text-muted">
                 {product.details.map((detail) => (
                   <li key={detail}>— {detail}</li>
@@ -235,5 +260,5 @@ export default function ProductPage() {
       </main>
       <Footer />
     </>
-  )
+  );
 }

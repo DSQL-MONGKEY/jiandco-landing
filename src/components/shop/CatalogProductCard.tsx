@@ -1,14 +1,16 @@
-import { Link } from 'react-router-dom'
-import { formatPrice } from '../../brand'
-import { collections, type CatalogProduct } from '../../catalog'
+import { Link } from "react-router-dom";
+import { formatPrice } from "../../brand";
+import { useCatalog } from "../../context/CatalogContext";
+import { resolveMediaUrl, type CatalogProduct } from "../../lib/api";
 
 type Props = {
-  product: CatalogProduct
-}
+  product: CatalogProduct;
+};
 
 export default function CatalogProductCard({ product }: Props) {
-  const collection = collections.find((item) => item.id === product.collection)
-  const primaryImage = product.images[0]
+  const { data } = useCatalog();
+  const collection = data?.collections.find((item) => item.id === product.collection);
+  const primaryImage = product.images[0];
 
   return (
     <Link
@@ -17,12 +19,18 @@ export default function CatalogProductCard({ product }: Props) {
       aria-label={`Lihat ${product.name}`}
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-main">
-        <img
-          className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(.22,.61,.36,1)] group-hover:scale-[1.04]"
-          src={primaryImage.src}
-          alt={primaryImage.alt}
-          loading="lazy"
-        />
+        {primaryImage ? (
+          <img
+            className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(.22,.61,.36,1)] group-hover:scale-[1.04]"
+            src={resolveMediaUrl(primaryImage.src)}
+            alt={primaryImage.alt}
+            loading="lazy"
+          />
+        ) : (
+          <div className="grid h-full w-full place-items-center bg-secondary/40 text-[0.6rem] tracking-[0.14em] text-muted uppercase">
+            {product.name}
+          </div>
+        )}
         {product.badge && (
           <span className="absolute top-3.5 left-3.5 bg-burgundy px-2.5 py-1.5 text-[0.5rem] leading-none font-semibold tracking-[0.14em] text-main uppercase">
             {product.badge}
@@ -34,23 +42,19 @@ export default function CatalogProductCard({ product }: Props) {
       </div>
       <div className="flex flex-col gap-1 pt-4">
         <p className="text-[0.54rem] font-medium tracking-[0.14em] text-muted uppercase">
-          {collection?.label} · {product.color}
+          {[collection?.label ?? "Catalog", product.color].filter(Boolean).join(" · ")}
         </p>
         <h3 className="font-display text-[clamp(1.25rem,1.7vw,1.55rem)] leading-[1.15] font-medium tracking-[-0.02em]">
           {product.name}
         </h3>
         <div className="flex items-baseline gap-2 pt-1">
-          <span className="text-[0.72rem] font-semibold">
-            {formatPrice(product.whatsappPrice)}
-          </span>
+          <span className="text-[0.72rem] font-semibold">{formatPrice(product.whatsappPrice)}</span>
           <span className="text-[0.6rem] text-muted line-through">
             {formatPrice(product.shopeePrice)}
           </span>
-          <span className="text-[0.5rem] tracking-[0.08em] text-burgundy uppercase">
-            via WA
-          </span>
+          <span className="text-[0.5rem] tracking-[0.08em] text-burgundy uppercase">via WA</span>
         </div>
       </div>
     </Link>
-  )
+  );
 }

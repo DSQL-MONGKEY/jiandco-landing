@@ -6,20 +6,16 @@ import { ArrowUpRight, WhatsAppIcon } from '../components/Icons'
 import Seo from '../components/Seo'
 import PromoBanner from '../components/shop/PromoBanner'
 import ShopHeader from '../components/shop/ShopHeader'
-import { getProduct, useCart } from '../context/CartContext'
+import { useCart } from '../context/CartContext'
+import { resolveMediaUrl } from '../lib/api'
 
 export default function CheckoutPage() {
   const { lines, whatsappTotal, shopeeTotal } = useCart()
 
-  const resolved = lines.flatMap((line) => {
-    const product = getProduct(line.productId)
-    return product ? [{ line, product }] : []
-  })
-
-  const orderText = resolved
+  const orderText = lines
     .map(
-      ({ line, product }) =>
-        `- ${product.name} (${product.color}) size ${line.size} x${line.quantity} — ${formatPrice(product.whatsappPrice * line.quantity)}`,
+      (line) =>
+        `- ${line.name} (${line.color}) size ${line.size} x${line.quantity} - ${formatPrice(line.whatsappPrice * line.quantity)}`,
     )
     .join('\n')
 
@@ -43,7 +39,7 @@ export default function CheckoutPage() {
             Checkout <em className="italic text-accent">pesananmu.</em>
           </h1>
 
-          {resolved.length === 0 ? (
+          {lines.length === 0 ? (
             <div className="mt-12 border-y border-line py-16 text-center">
               <p className="font-display text-[2rem]">
                 Belum ada pesanan untuk di-checkout.
@@ -72,7 +68,7 @@ export default function CheckoutPage() {
                     </Link>
                   </div>
                   <div className="mt-5 border-t border-line">
-                    {resolved.map(({ line, product }) => (
+                    {lines.map((line) => (
                       <div
                         className="flex gap-4 border-b border-line py-4"
                         key={`${line.productId}-${line.size}`}
@@ -80,23 +76,21 @@ export default function CheckoutPage() {
                         <div className="w-16 shrink-0 overflow-hidden bg-main">
                           <img
                             className="aspect-[3/4] h-full w-full object-cover"
-                            src={product.images[0].src}
-                            alt={product.images[0].alt}
+                            src={resolveMediaUrl(line.image)}
+                            alt={line.name}
                           />
                         </div>
                         <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
                           <div>
                             <p className="font-display text-[1.1rem] leading-[1.1]">
-                              {product.name}
+                              {line.name}
                             </p>
                             <p className="mt-1 text-[0.6rem] text-muted">
                               Size {line.size} · Qty {line.quantity}
                             </p>
                           </div>
                           <p className="shrink-0 text-[0.72rem] font-semibold">
-                            {formatPrice(
-                              product.whatsappPrice * line.quantity,
-                            )}
+                            {formatPrice(line.whatsappPrice * line.quantity)}
                           </p>
                         </div>
                       </div>
@@ -162,10 +156,10 @@ export default function CheckoutPage() {
                         </span>
                       ))}
                     </div>
-                    {resolved.length === 1 ? (
+                    {lines.length === 1 ? (
                       <a
                         className="btn btn-outline mt-5 min-h-12 w-full"
-                        href={resolved[0].product.shopeeUrl}
+                        href={lines[0].shopeeUrl}
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -174,16 +168,16 @@ export default function CheckoutPage() {
                       </a>
                     ) : (
                       <div className="mt-5 flex flex-col gap-2">
-                        {resolved.map(({ line, product }) => (
+                        {lines.map((line) => (
                           <a
                             className="flex items-center justify-between border border-line px-3 py-3 text-[0.7rem] transition-colors hover:border-burgundy"
-                            href={product.shopeeUrl}
+                            href={line.shopeeUrl}
                             target="_blank"
                             rel="noreferrer"
                             key={`${line.productId}-${line.size}`}
                           >
                             <span>
-                              {product.name} · {line.size} · x{line.quantity}
+                              {line.name} · {line.size} · x{line.quantity}
                             </span>
                             <ArrowUpRight size={13} />
                           </a>

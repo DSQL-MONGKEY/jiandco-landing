@@ -6,10 +6,17 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { catalogProducts, type CatalogProduct } from '../catalog'
+import type { CatalogProduct } from '../lib/api'
 
 export type CartLine = {
   productId: string
+  slug: string
+  name: string
+  color: string
+  image: string
+  whatsappPrice: number
+  shopeePrice: number
+  shopeeUrl: string
   size: string
   quantity: number
 }
@@ -19,7 +26,7 @@ type CartContextValue = {
   count: number
   whatsappTotal: number
   shopeeTotal: number
-  addItem: (productId: string, size: string, quantity?: number) => void
+  addItem: (product: CatalogProduct, size: string, quantity?: number) => void
   updateQuantity: (productId: string, size: string, quantity: number) => void
   removeItem: (productId: string, size: string) => void
   clearCart: () => void
@@ -28,10 +35,6 @@ type CartContextValue = {
 const STORAGE_KEY = 'jico-cart'
 
 const CartContext = createContext<CartContextValue | null>(null)
-
-export function getProduct(productId: string): CatalogProduct | undefined {
-  return catalogProducts.find((product) => product.id === productId)
-}
 
 function readCart(): CartLine[] {
   if (typeof window === 'undefined') return []
@@ -43,9 +46,12 @@ function readCart(): CartLine[] {
     return parsed.filter(
       (line): line is CartLine =>
         typeof line?.productId === 'string' &&
+        typeof line?.slug === 'string' &&
+        typeof line?.name === 'string' &&
+        typeof line?.image === 'string' &&
+        typeof line?.whatsappPrice === 'number' &&
         typeof line?.size === 'string' &&
-        typeof line?.quantity === 'number' &&
-        Boolean(getProduct(line.productId)),
+        typeof line?.quantity === 'number',
     )
   } catch {
     return []
@@ -59,10 +65,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lines))
   }, [lines])
 
-  const addItem = (productId: string, size: string, quantity = 1) => {
+  const addItem = (product: CatalogProduct, size: string, quantity = 1) => {
     setLines((current) => {
       const existing = current.find(
-        (line) => line.productId === productId && line.size === size,
+        (line) => line.productId === product.id && line.size === size,
       )
 
       if (existing) {
@@ -73,7 +79,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
         )
       }
 
-      return [...current, { productId, size, quantity }]
+      return [
+        ...current,
+        {
+          productId: product.id,
+          slug: product.slug,
+          name: product.name,
+          color: product.color,
+          image: product.images[0]?.src ?? '',
+          whatsappPrice: product.whatsappPrice,
+          shopeePrice: product.shopeePrice,
+          shopeeUrl: product.shopeeUrl,
+          size,
+          quantity,
+        },
+      ]
     })
   }
 
@@ -97,14 +117,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CartContextValue>(() => {
     const count = lines.reduce((total, line) => total + line.quantity, 0)
-    const whatsappTotal = lines.reduce((total, line) => {
-      const product = getProduct(line.productId)
-      return total + (product?.whatsappPrice ?? 0) * line.quantity
-    }, 0)
-    const shopeeTotal = lines.reduce((total, line) => {
-      const product = getProduct(line.productId)
-      return total + (product?.shopeePrice ?? 0) * line.quantity
-    }, 0)
+    const whatsappTotal = lines.reduce(
+      (total, line) => total + line.whatsappPrice * line.quantity,
+      0,
+    )
+    const shopeeTotal = lines.reduce(
+      (total, line) => total + line.shopeePrice * line.quantity,
+      0,
+    )
 
     return {
       lines,

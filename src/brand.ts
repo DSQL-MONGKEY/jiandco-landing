@@ -252,15 +252,16 @@ export const brand: Brand = {
     },
   },
   nav: [
-    { label: 'Catalog', href: '/catalog' },
-    { label: 'The Blush Edit', href: '/#blush-edit' },
-    { label: 'Our Story', href: '/#story' },
-    { label: 'Lookbook', href: '/#lookbook' },
-    { label: 'Contact', href: '/#contact' },
+    { label: 'New In', href: '#new-in' },
+    { label: 'Accessories', href: '#accessories' },
+    { label: 'The Blush Edit', href: '#blush-edit' },
+    { label: 'Our Story', href: '#story' },
+    { label: 'Lookbook', href: '#lookbook' },
+    { label: 'Contact', href: '#contact' },
   ],
   header: {
     ctaLabel: 'Shop Now',
-    ctaHref: '/catalog',
+    ctaHref: '#new-in',
   },
   hero: {
     eyebrow: 'New Collection — 01',
@@ -268,7 +269,7 @@ export const brand: Brand = {
     titleAccent: 'made to fit.',
     description:
       'Ji&Co hadir untuk perempuan yang percaya bahwa gaya terbaik tidak perlu berteriak. Potongan yang bersih, material pilihan yang nyaman di kulit, serta detail penuh pertimbangan dirancang khusus untuk merayakan diri seutuhnya.',
-    primaryCta: { label: 'Jelajahi Koleksi', href: '/catalog' },
+    primaryCta: { label: 'Jelajahi Koleksi', href: '#new-in' },
     secondaryCta: { label: 'Kenali Ji&Co', href: '#story' },
     image: '/images/hero-main.webp',
     imageAlt:
@@ -621,7 +622,7 @@ export const brand: Brand = {
       'Blush signature shade',
       'Tersedia XS–XL',
     ],
-    primaryCta: { label: 'Jelajahi The Blush Edit', href: '/catalog?collection=blush' },
+    primaryCta: { label: 'Jelajahi The Blush Edit', href: '#new-in' },
     secondaryCta: { label: 'Lihat Lookbook', href: '#lookbook' },
     image: '/images/blush-shirt.webp',
     imageAlt:
@@ -794,10 +795,11 @@ export const brand: Brand = {
       {
         title: 'Jelajahi',
         links: [
-          { label: 'Catalog', href: '/catalog' },
-          { label: 'The Blush Edit', href: '/#blush-edit' },
-          { label: 'Our Story', href: '/#story' },
-          { label: 'Lookbook', href: '/#lookbook' },
+          { label: 'New In', href: '#new-in' },
+          { label: 'Accessories', href: '#accessories' },
+          { label: 'The Blush Edit', href: '#blush-edit' },
+          { label: 'Our Story', href: '#story' },
+          { label: 'Lookbook', href: '#lookbook' },
         ],
       },
       {

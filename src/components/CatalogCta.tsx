@@ -1,9 +1,25 @@
 import { Link } from 'react-router-dom'
-import { catalogCta } from '../catalog'
+import { catalogCta as fallbackCta } from '../catalog'
+import { useCatalog } from '../context/CatalogContext'
+import { resolveMediaUrl } from '../lib/api'
 import { ArrowUpRight } from './Icons'
 import Reveal from './Reveal'
 
 export default function CatalogCta() {
+  const { data } = useCatalog()
+  const cta = data?.cta
+  const catalogCta = {
+    eyebrow: cta?.eyebrow || fallbackCta.eyebrow,
+    title: cta?.title || fallbackCta.title,
+    titleAccent: cta?.titleAccent || fallbackCta.titleAccent,
+    description: cta?.description || fallbackCta.description,
+    cta: cta?.label || fallbackCta.cta,
+    image: resolveMediaUrl(cta?.imageUrl) || fallbackCta.image,
+    imageAlt: fallbackCta.imageAlt,
+    secondaryImage: resolveMediaUrl(cta?.secondaryImageUrl) || fallbackCta.secondaryImage,
+    secondaryImageAlt: fallbackCta.secondaryImageAlt,
+  }
+
   return (
     <section className="section-space bg-white">
       <div className="container-page grid items-center gap-[clamp(2.5rem,6vw,6rem)] lg:grid-cols-[0.85fr_1.15fr]">

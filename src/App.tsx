@@ -7,6 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom'
 import { brand } from './brand'
+import { CatalogProvider } from './context/CatalogContext'
 import { CartProvider } from './context/CartContext'
 import CartPage from './pages/CartPage'
 import CatalogPage from './pages/CatalogPage'
@@ -51,7 +52,8 @@ function ScrollManager() {
 export default function App() {
   return (
     <BrowserRouter>
-      <CartProvider>
+      <CatalogProvider>
+        <CartProvider>
         <div
           className="min-h-screen overflow-x-clip bg-main font-body text-ink"
           style={themeStyle}
@@ -72,7 +74,8 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
-      </CartProvider>
+        </CartProvider>
+      </CatalogProvider>
     </BrowserRouter>
   )
 }

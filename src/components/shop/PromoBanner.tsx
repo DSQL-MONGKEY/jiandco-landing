@@ -1,5 +1,5 @@
 import { brand } from '../../brand'
-import { promo } from '../../catalog'
+import { useCatalog } from '../../context/CatalogContext'
 import { ArrowUpRight, WhatsAppIcon } from '../Icons'
 
 type Props = {
@@ -7,6 +7,9 @@ type Props = {
 }
 
 export default function PromoBanner({ compact = false }: Props) {
+  const { data } = useCatalog()
+  const promo = data?.promo
+  if (!promo) return null
   const href = `https://wa.me/${brand.contact.whatsapp}?text=${encodeURIComponent(
     brand.contact.whatsappMessage,
   )}`
