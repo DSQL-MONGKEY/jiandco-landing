@@ -3,8 +3,9 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { brand, formatPrice } from "../brand";
 import { useCatalog } from "../context/CatalogContext";
 import { resolveMediaUrl } from "../lib/api";
+import { getSiteUrl } from "../lib/seo";
 import Footer from "../components/Footer";
-import { ArrowLeft, MinusIcon, PlusIcon, WhatsAppIcon } from "../components/Icons";
+import { MinusIcon, PlusIcon, WhatsAppIcon } from "../components/Icons";
 import Seo from "../components/Seo";
 import PromoBanner from "../components/shop/PromoBanner";
 import ShopHeader from "../components/shop/ShopHeader";
@@ -46,25 +47,65 @@ export default function ProductPage() {
   if (!product) return <Navigate to="/catalog" replace />;
 
   const collection = data?.collections.find((item) => item.id === product.collection);
+  const collectionLabel = collection?.label ?? "Ji&Co";
   const images = product.images;
   const image = images[imageIndex] ?? images[0];
   const effectiveSize = product.sizes.includes(size) ? size : (product.sizes[0] ?? "");
   const saving = product.shopeePrice - product.whatsappPrice;
-  const origin = window.location.origin;
+  const siteUrl = getSiteUrl();
+  const productUrl = `${siteUrl}/catalog/${product.slug}`;
+  const productImage = image ? resolveMediaUrl(image.src) : brand.seo.ogImage;
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description,
-    image: product.images.map((item) => resolveMediaUrl(item.src)),
-    brand: { "@type": "Brand", name: brand.name },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "IDR",
-      price: product.whatsappPrice,
-      availability: "https://schema.org/InStock",
-      url: `${origin}/catalog/${product.slug}`,
-    },
+    "@graph": [
+      {
+        "@type": "Product",
+        "@id": `${productUrl}#product`,
+        name: product.name,
+        description: product.description,
+        image: product.images.map((item) => resolveMediaUrl(item.src)),
+        url: productUrl,
+        brand: { "@type": "Brand", name: brand.name },
+        category: collectionLabel,
+        color: product.color,
+        size: product.sizes.join(", "),
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "IDR",
+          price: product.whatsappPrice,
+          availability: product.sizes.length
+            ? "https://schema.org/InStock"
+            : "https://schema.org/PreOrder",
+          itemCondition: "https://schema.org/NewCondition",
+          url: productUrl,
+          seller: { "@type": "Organization", name: brand.companyName },
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${productUrl}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: `${siteUrl}/`,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Katalog",
+            item: `${siteUrl}/catalog`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: product.name,
+            item: productUrl,
+          },
+        ],
+      },
+    ],
   };
 
   const handleAdd = () => {
@@ -81,24 +122,31 @@ export default function ProductPage() {
   return (
     <>
       <Seo
-        title={`${product.name} — Ji&Co`}
-        description={`${product.name} dari koleksi ${collection?.label ?? "Ji&Co"}. Checkout via WhatsApp atau Shopee.`}
+        title={`${product.name} — ${collectionLabel} | Ji&Co`}
+        description={`${product.name} warna ${product.color} dari koleksi ${collectionLabel}. Tersedia ukuran ${product.sizes.join(", ")}. Harga ${formatPrice(product.whatsappPrice)} via WhatsApp atau Shopee.`}
         path={`/catalog/${product.slug}`}
-        image={resolveMediaUrl(product.images[0]?.src)}
+        image={productImage}
+        imageAlt={image?.alt ?? product.name}
         type="product"
+        product={{ price: product.whatsappPrice, currency: "IDR" }}
         jsonLd={jsonLd}
       />
       <ShopHeader />
       <main id="main" className="bg-main">
-        <div className="container-page pt-8 pb-6">
-          <Link
-            className="inline-flex items-center gap-2 text-[0.58rem] font-semibold tracking-[0.14em] text-muted uppercase transition-colors hover:text-accent"
-            to="/catalog"
-          >
-            <ArrowLeft size={13} />
-            Kembali ke katalog
+        <nav
+          aria-label="Breadcrumb"
+          className="container-page flex flex-wrap items-center gap-2 pt-8 pb-6 text-[0.56rem] font-semibold tracking-[0.14em] text-muted uppercase"
+        >
+          <Link className="transition-colors hover:text-accent" to="/">
+            Home
           </Link>
-        </div>
+          <span aria-hidden="true">/</span>
+          <Link className="transition-colors hover:text-accent" to="/catalog">
+            Katalog
+          </Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{product.name}</span>
+        </nav>
 
         <section className="container-page grid gap-10 pb-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
           <div>
@@ -108,6 +156,8 @@ export default function ProductPage() {
                   className="h-full w-full object-cover"
                   src={resolveMediaUrl(image.src)}
                   alt={image.alt ?? product.name}
+                  fetchPriority="high"
+                  decoding="async"
                 />
               ) : (
                 <div className="grid h-full w-full place-items-center bg-secondary/40 px-6 text-center text-[0.62rem] tracking-[0.14em] text-muted uppercase">
@@ -131,6 +181,7 @@ export default function ProductPage() {
                     src={resolveMediaUrl(item.src)}
                     alt={item.alt}
                     loading="lazy"
+                    decoding="async"
                   />
                 </button>
               ))}

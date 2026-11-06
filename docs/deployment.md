@@ -8,6 +8,7 @@ nginx di VPS rjm.
 
 ```env
 VITE_API_BASE_URL=https://api.jiandco.id/api/v1
+VITE_SITE_URL=https://www.jiandco.id
 ```
 
 `VITE_*` di-inline saat build. Jika domain API berubah, image harus di-rebuild.
@@ -16,7 +17,7 @@ VITE_API_BASE_URL=https://api.jiandco.id/api/v1
 
 ```bash
 bun install --frozen-lockfile
-VITE_API_BASE_URL=https://api.jiandco.id/api/v1 bun run build
+VITE_API_BASE_URL=https://api.jiandco.id/api/v1 VITE_SITE_URL=https://www.jiandco.id bun run build
 ```
 
 ## Docker
@@ -24,6 +25,7 @@ VITE_API_BASE_URL=https://api.jiandco.id/api/v1 bun run build
 ```bash
 docker build \
   --build-arg VITE_API_BASE_URL=https://api.jiandco.id/api/v1 \
+  --build-arg VITE_SITE_URL=https://www.jiandco.id \
   -t oinsh-page .
 docker run -d \
   --name jiandco-landing \

@@ -1,7 +1,8 @@
 import { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { brand } from "../brand";
 import { useCatalog } from "../context/CatalogContext";
-import { resolveMediaUrl } from "../lib/api";
+import { getSiteUrl } from "../lib/seo";
 import Footer from "../components/Footer";
 import Seo from "../components/Seo";
 import CatalogProductCard from "../components/shop/CatalogProductCard";
@@ -34,6 +35,55 @@ export default function CatalogPage() {
   };
 
   const activeLabel = collections.find((collection) => collection.id === activeCollection);
+  const siteUrl = getSiteUrl();
+  const catalogTitle = "Katalog Chongsam & Blush — Ji&Co";
+  const catalogDescription =
+    "Jelajahi atasan Ji&Co dari koleksi Chongsam dan Blush. Pilih warna dan ukuran S–XL, lalu checkout melalui WhatsApp atau Shopee.";
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${siteUrl}/catalog#page`,
+        name: catalogTitle,
+        description: catalogDescription,
+        url: `${siteUrl}/catalog`,
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: { "@id": `${siteUrl}/#organization` },
+        breadcrumb: { "@id": `${siteUrl}/catalog#breadcrumb` },
+        mainEntity: { "@id": `${siteUrl}/catalog#products` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${siteUrl}/catalog#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: `${siteUrl}/`,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Katalog",
+            item: `${siteUrl}/catalog`,
+          },
+        ],
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${siteUrl}/catalog#products`,
+        numberOfItems: products.length,
+        itemListElement: products.map((product, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          url: `${siteUrl}/catalog/${product.slug}`,
+          name: product.name,
+        })),
+      },
+    ],
+  };
 
   if (loading) {
     return (
@@ -70,18 +120,28 @@ export default function CatalogPage() {
   return (
     <>
       <Seo
-        title="Katalog — Ji&Co"
-        description="Jelajahi koleksi Chongsam dan Blush dari Ji&Co. Pilih atasan, ukuran S–XL, dan checkout melalui WhatsApp atau Shopee."
+        title={catalogTitle}
+        description={catalogDescription}
         path="/catalog"
-        image={
-          products[0]?.images[0]?.src
-            ? resolveMediaUrl(products[0].images[0].src)
-            : "/catalog/chongsam/ivory-1.webp"
-        }
+        image={brand.seo.ogImage}
+        imageAlt="Katalog Ji&Co — Chongsam & Blush"
+        imageWidth={1200}
+        imageHeight={630}
+        jsonLd={jsonLd}
       />
       <ShopHeader />
       <main id="main" className="bg-main">
-        <section className="container-page pt-12 pb-10 sm:pt-16 sm:pb-14">
+        <nav
+          aria-label="Breadcrumb"
+          className="container-page flex items-center gap-2 pt-8 text-[0.56rem] font-semibold tracking-[0.14em] text-muted uppercase"
+        >
+          <Link className="transition-colors hover:text-accent" to="/">
+            Home
+          </Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Katalog</span>
+        </nav>
+        <section className="container-page pt-8 pb-10 sm:pt-10 sm:pb-14">
           <p className="eyebrow">Catalog — Chongsam &amp; Blush</p>
           <div className="mt-4 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <h1 className="section-title max-w-[13ch]">

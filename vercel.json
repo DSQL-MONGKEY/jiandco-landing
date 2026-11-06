@@ -1,8 +1,40 @@
 {
   "rewrites": [
-    { "source": "/catalog", "destination": "/index.html" },
-    { "source": "/catalog/:slug", "destination": "/index.html" },
-    { "source": "/cart", "destination": "/index.html" },
-    { "source": "/checkout", "destination": "/index.html" }
+    {
+      "source": "/catalog",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/catalog/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cart",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/checkout",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/cart",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/checkout",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
   ]
 }

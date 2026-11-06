@@ -1,36 +1,27 @@
-import { Link } from 'react-router-dom'
-import { brand, type FooterColumn } from '../brand'
-import {
-  ArrowUp,
-  InstagramIcon,
-  MailIcon,
-  WhatsAppIcon,
-} from './Icons'
-import Wordmark from './Wordmark'
+import { Link } from "react-router-dom";
+import { brand, type FooterColumn } from "../brand";
+import { ArrowUp, InstagramIcon, MailIcon, WhatsAppIcon } from "./Icons";
+import Wordmark from "./Wordmark";
 
 export default function Footer() {
-  const footer = brand.footer
+  const footer = brand.footer;
   const contactColumn: FooterColumn = {
     title: footer.contactTitle,
     links: [
       {
-        label: 'WhatsApp',
+        label: "WhatsApp",
         href: `https://wa.me/${brand.contact.whatsapp}`,
         external: true,
       },
-      { label: 'Email', href: `mailto:${brand.contact.email}` },
+      { label: "Email", href: `mailto:${brand.contact.email}` },
       {
-        label: 'Instagram',
+        label: "Instagram",
         href: brand.contact.instagramUrl,
         external: true,
       },
     ],
-  }
-  const columns = [
-    ...footer.columns.slice(0, 1),
-    contactColumn,
-    ...footer.columns.slice(1),
-  ]
+  };
+  const columns = [...footer.columns.slice(0, 1), contactColumn, ...footer.columns.slice(1)];
 
   return (
     <footer
@@ -82,14 +73,14 @@ export default function Footer() {
                 <ul className="flex flex-col gap-[0.65rem]">
                   {column.links.map((link) =>
                     link.external ||
-                    link.href.startsWith('http') ||
-                    link.href.startsWith('mailto:') ? (
+                    link.href.startsWith("http") ||
+                    link.href.startsWith("mailto:") ? (
                       <li key={link.label}>
                         <a
                           className="text-[0.82rem] leading-[1.6] text-main/65 transition-colors hover:text-secondary focus-visible:outline-main"
                           href={link.href}
-                          target={link.external ? '_blank' : undefined}
-                          rel={link.external ? 'noreferrer' : undefined}
+                          target={link.external ? "_blank" : undefined}
+                          rel={link.external ? "noreferrer" : undefined}
                         >
                           {link.label}
                         </a>
@@ -109,10 +100,7 @@ export default function Footer() {
               ) : (
                 <ul className="flex flex-col gap-[0.65rem]">
                   {column.lines?.map((line) => (
-                    <li
-                      className="text-[0.82rem] leading-[1.6] text-main/65"
-                      key={line}
-                    >
+                    <li className="text-[0.82rem] leading-[1.6] text-main/65" key={line}>
                       {line}
                     </li>
                   ))}
@@ -123,9 +111,12 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-5 border-t border-main/15 py-[1.4rem] text-[0.62rem] leading-[1.6] tracking-[0.02em] text-main/60 max-[760px]:flex-col max-[760px]:items-start max-[760px]:gap-2.5">
-          <p>{footer.rights}</p>
+          <div className="space-y-1">
+            <p>{footer.rights}</p>
+            <p>{footer.trademark}</p>
+          </div>
           <p>
-            {footer.creditPrefix}{' '}
+            {footer.creditPrefix}{" "}
             <a
               className="underline underline-offset-[3px] transition-colors hover:text-secondary focus-visible:outline-main"
               href={footer.creditHref}
@@ -145,12 +136,9 @@ export default function Footer() {
         </div>
       </div>
 
-      <div
-        className="overflow-hidden border-t border-main/10"
-        aria-hidden="true"
-      >
+      <div className="overflow-hidden border-t border-main/10" aria-hidden="true">
         <Wordmark className="block w-full pt-[0.12em] text-center text-[clamp(7rem,23vw,21rem)] leading-[0.68] font-normal tracking-[-0.06em] text-main/[0.06] whitespace-nowrap [&_em]:text-secondary/[0.18] max-sm:text-[clamp(6rem,31vw,12rem)]" />
       </div>
     </footer>
-  )
+  );
 }

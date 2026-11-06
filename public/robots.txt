@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /cart
 Disallow: /checkout
+Sitemap: https://www.jiandco.id/sitemap.xml

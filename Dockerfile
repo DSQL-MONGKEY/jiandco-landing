@@ -10,7 +10,9 @@ RUN bun install --frozen-lockfile
 COPY . .
 
 ARG VITE_API_BASE_URL=https://api.jiandco.id/api/v1
+ARG VITE_SITE_URL=https://www.jiandco.id
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_SITE_URL=$VITE_SITE_URL
 
 RUN bun run build
 

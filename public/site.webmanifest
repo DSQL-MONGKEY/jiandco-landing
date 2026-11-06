@@ -1,0 +1,32 @@
+{
+  "name": "Ji&Co — Everyday Elegance, Made to Fit",
+  "short_name": "Ji&Co",
+  "description": "Fashion perempuan Indonesia dari Ji&Co. Jelajahi koleksi Chongsam & Blush.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#EEE4DA",
+  "theme_color": "#4D0E13",
+  "lang": "id",
+  "categories": ["shopping", "fashion", "lifestyle"],
+  "icons": [
+    {
+      "src": "/brand/jiandco-mark-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/jiandco-mark-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/jiandco-mark-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

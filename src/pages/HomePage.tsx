@@ -1,35 +1,34 @@
-import { brand } from '../brand'
-import BlushEdit from '../components/BlushEdit'
-import CatalogCta from '../components/CatalogCta'
-import Footer from '../components/Footer'
-import Header from '../components/Header'
-import Hero from '../components/Hero'
-import InstagramStrip from '../components/InstagramStrip'
-import Lookbook from '../components/Lookbook'
-import Marquee from '../components/Marquee'
-import Newsletter from '../components/Newsletter'
-import Seo from '../components/Seo'
-import Story from '../components/Story'
-import Testimonials from '../components/Testimonials'
-import Values from '../components/Values'
+import { brand } from "../brand";
+import { getSiteUrl } from "../lib/seo";
+import BlushEdit from "../components/BlushEdit";
+import CatalogCta from "../components/CatalogCta";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+import Hero from "../components/Hero";
+import InstagramStrip from "../components/InstagramStrip";
+import Lookbook from "../components/Lookbook";
+import Marquee from "../components/Marquee";
+import Newsletter from "../components/Newsletter";
+import Seo from "../components/Seo";
+import Story from "../components/Story";
+import Testimonials from "../components/Testimonials";
+import Values from "../components/Values";
 
 export default function HomePage() {
-  const origin = window.location.origin
+  const siteUrl = getSiteUrl();
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: brand.name,
-    alternateName: brand.meaning,
-    url: origin,
-    logo: `${origin}/favicon.svg`,
-    sameAs: [brand.contact.instagramUrl],
-    contactPoint: {
-      '@type': 'ContactPoint',
-      contactType: 'customer service',
-      telephone: `+${brand.contact.whatsapp}`,
-      email: brand.contact.email,
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: brand.seo.title,
+    description: brand.seo.description,
+    url: `${siteUrl}/`,
+    isPartOf: { "@id": `${siteUrl}/#website` },
+    about: { "@id": `${siteUrl}/#organization` },
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      url: `${siteUrl}${brand.seo.ogImage}`,
     },
-  }
+  };
 
   return (
     <>
@@ -37,7 +36,10 @@ export default function HomePage() {
         title={brand.seo.title}
         description={brand.seo.description}
         path="/"
-        image={brand.hero.image}
+        image={brand.seo.ogImage}
+        imageAlt="Ji&Co — Everyday Elegance, Made to Fit"
+        imageWidth={1200}
+        imageHeight={630}
         jsonLd={jsonLd}
       />
       <Header />
@@ -55,5 +57,5 @@ export default function HomePage() {
       </main>
       <Footer />
     </>
-  )
+  );
 }
