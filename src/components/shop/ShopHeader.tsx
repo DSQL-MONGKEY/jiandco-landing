@@ -1,26 +1,22 @@
-import { Link } from 'react-router-dom'
-import { useCatalog } from '../../context/CatalogContext'
-import { useCart } from '../../context/CartContext'
-import { BagIcon } from '../Icons'
-import Wordmark from '../Wordmark'
+import { Link } from "react-router-dom";
+import { useCatalog } from "../../context/use-catalog";
+import { useCart } from "../../context/use-cart";
+import { BagIcon } from "../Icons";
+import Wordmark from "../Wordmark";
 
 export default function ShopHeader() {
-  const { count } = useCart()
-  const { data } = useCatalog()
-  const promo = data?.promo
+  const { count } = useCart();
+  const { data } = useCatalog();
+  const promo = data?.promo;
 
   return (
     <>
       <div className="bg-burgundy px-4 py-2 text-center text-[0.55rem] font-medium tracking-[0.18em] text-main/90 uppercase">
-        {promo?.badge ?? 'Harga Spesial WhatsApp'} — lebih hemat dibanding Shopee
+        {promo?.badge ?? "Harga Spesial WhatsApp"} — lebih hemat dibanding Shopee
       </div>
       <header className="sticky top-0 z-40 border-b border-line bg-main/95 backdrop-blur-md">
         <div className="container-page flex h-[4.5rem] items-center justify-between gap-6">
-          <Link
-            className="shrink-0"
-            to="/"
-            aria-label="Ji&Co — kembali ke home"
-          >
+          <Link className="shrink-0" to="/" aria-label="Ji&Co — kembali ke home">
             <Wordmark className="text-[1.75rem]" />
           </Link>
 
@@ -51,5 +47,5 @@ export default function ShopHeader() {
         </div>
       </header>
     </>
-  )
+  );
 }

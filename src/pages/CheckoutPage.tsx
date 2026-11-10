@@ -1,27 +1,27 @@
-import { Link } from 'react-router-dom'
-import { brand, formatPrice } from '../brand'
-import { shopeeStoreUrl } from '../catalog'
-import Footer from '../components/Footer'
-import { ArrowUpRight, WhatsAppIcon } from '../components/Icons'
-import Seo from '../components/Seo'
-import PromoBanner from '../components/shop/PromoBanner'
-import ShopHeader from '../components/shop/ShopHeader'
-import { useCart } from '../context/CartContext'
-import { resolveMediaUrl } from '../lib/api'
+import { Link } from "react-router-dom";
+import { brand, formatPrice } from "../brand";
+import { shopeeStoreUrl } from "../catalog";
+import Footer from "../components/Footer";
+import { ArrowUpRight, WhatsAppIcon } from "../components/Icons";
+import Seo from "../components/Seo";
+import PromoBanner from "../components/shop/PromoBanner";
+import ShopHeader from "../components/shop/ShopHeader";
+import { useCart } from "../context/use-cart";
+import { resolveMediaUrl } from "../lib/api";
 
 export default function CheckoutPage() {
-  const { lines, whatsappTotal, shopeeTotal } = useCart()
+  const { lines, whatsappTotal, shopeeTotal } = useCart();
 
   const orderText = lines
     .map(
       (line) =>
-        `- ${line.name} (${line.color}) size ${line.size} x${line.quantity} - ${formatPrice(line.whatsappPrice * line.quantity)}`,
+        `- ${line.name} (${line.colorName}) size ${line.size} x${line.quantity} - ${formatPrice(line.whatsappPrice * line.quantity)}`,
     )
-    .join('\n')
+    .join("\n");
 
   const whatsappHref = `https://wa.me/${brand.contact.whatsapp}?text=${encodeURIComponent(
     `Halo ${brand.name}, saya ingin checkout pesanan berikut:\n${orderText}\n\nTotal via WhatsApp: ${formatPrice(whatsappTotal)}`,
-  )}`
+  )}`;
 
   return (
     <>
@@ -41,9 +41,7 @@ export default function CheckoutPage() {
 
           {lines.length === 0 ? (
             <div className="mt-12 border-y border-line py-16 text-center">
-              <p className="font-display text-[2rem]">
-                Belum ada pesanan untuk di-checkout.
-              </p>
+              <p className="font-display text-[2rem]">Belum ada pesanan untuk di-checkout.</p>
               <Link className="btn btn-brand mt-7 min-h-12" to="/catalog">
                 Jelajahi Katalog
               </Link>
@@ -71,7 +69,7 @@ export default function CheckoutPage() {
                     {lines.map((line) => (
                       <div
                         className="flex gap-4 border-b border-line py-4"
-                        key={`${line.productId}-${line.size}`}
+                        key={`${line.productId}-${line.colorId}-${line.size}`}
                       >
                         <div className="w-16 shrink-0 overflow-hidden bg-main">
                           <img
@@ -82,11 +80,9 @@ export default function CheckoutPage() {
                         </div>
                         <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
                           <div>
-                            <p className="font-display text-[1.1rem] leading-[1.1]">
-                              {line.name}
-                            </p>
+                            <p className="font-display text-[1.1rem] leading-[1.1]">{line.name}</p>
                             <p className="mt-1 text-[0.6rem] text-muted">
-                              Size {line.size} · Qty {line.quantity}
+                              {line.colorName} · Size {line.size} · Qty {line.quantity}
                             </p>
                           </div>
                           <p className="shrink-0 text-[0.72rem] font-semibold">
@@ -98,15 +94,11 @@ export default function CheckoutPage() {
                   </div>
                   <div className="mt-5 flex justify-between text-[0.85rem]">
                     <span className="text-muted">Total via WhatsApp</span>
-                    <span className="font-semibold">
-                      {formatPrice(whatsappTotal)}
-                    </span>
+                    <span className="font-semibold">{formatPrice(whatsappTotal)}</span>
                   </div>
                   <div className="mt-2 flex justify-between text-[0.72rem] text-muted">
                     <span>Total harga Shopee</span>
-                    <span className="line-through">
-                      {formatPrice(shopeeTotal)}
-                    </span>
+                    <span className="line-through">{formatPrice(shopeeTotal)}</span>
                   </div>
                 </div>
 
@@ -119,9 +111,8 @@ export default function CheckoutPage() {
                       Checkout via WhatsApp
                     </h2>
                     <p className="mt-3 text-[0.82rem] leading-[1.7] text-muted">
-                      Pesan langsung ke admin untuk harga spesial, konfirmasi
-                      stok, dan ongkir. Pesananmu sudah tersusun otomatis di
-                      pesan WhatsApp.
+                      Pesan langsung ke admin untuk harga spesial, konfirmasi stok, dan ongkir.
+                      Pesananmu sudah tersusun otomatis di pesan WhatsApp.
                     </p>
                     <a
                       className="btn btn-brand mt-5 min-h-12 w-full"
@@ -142,12 +133,11 @@ export default function CheckoutPage() {
                       Checkout via Shopee
                     </h2>
                     <p className="mt-3 text-[0.82rem] leading-[1.7] text-muted">
-                      Bayar instan dengan QRIS, ShopeePay, atau PayLater.
-                      Selesaikan pembayaran di Shopee, lalu kirim bukti pesanan
-                      ke WhatsApp bila diperlukan.
+                      Bayar instan dengan QRIS, ShopeePay, atau PayLater. Selesaikan pembayaran di
+                      Shopee, lalu kirim bukti pesanan ke WhatsApp bila diperlukan.
                     </p>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {['QRIS', 'ShopeePay', 'PayLater'].map((method) => (
+                      {["QRIS", "ShopeePay", "PayLater"].map((method) => (
                         <span
                           className="border border-line px-2.5 py-1 text-[0.54rem] font-semibold tracking-[0.1em] text-muted uppercase"
                           key={method}
@@ -174,10 +164,10 @@ export default function CheckoutPage() {
                             href={line.shopeeUrl}
                             target="_blank"
                             rel="noreferrer"
-                            key={`${line.productId}-${line.size}`}
+                            key={`${line.productId}-${line.colorId}-${line.size}`}
                           >
                             <span>
-                              {line.name} · {line.size} · x{line.quantity}
+                              {line.name} · {line.colorName} · {line.size} · x{line.quantity}
                             </span>
                             <ArrowUpRight size={13} />
                           </a>
@@ -193,9 +183,9 @@ export default function CheckoutPage() {
                       </div>
                     )}
                     <p className="mt-4 text-[0.65rem] leading-[1.6] text-muted">
-                      Shopee tidak mendukung checkout multi-item melalui satu
-                      tautan. Untuk beberapa item, selesaikan tiap produk di
-                      Shopee atau gunakan WhatsApp untuk satu pesanan.
+                      Shopee tidak mendukung checkout multi-item melalui satu tautan. Untuk beberapa
+                      item, selesaikan tiap produk di Shopee atau gunakan WhatsApp untuk satu
+                      pesanan.
                     </p>
                   </div>
                 </div>
@@ -206,5 +196,5 @@ export default function CheckoutPage() {
       </main>
       <Footer />
     </>
-  )
+  );
 }

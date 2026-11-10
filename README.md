@@ -15,7 +15,7 @@ VITE_API_BASE_URL=http://localhost:2900/api/v1
 VITE_SITE_URL=https://www.jiandco.id
 ```
 
-The catalog, product detail, cart, and checkout use the Jiandco Go API. Dashboard admin edits are reflected on the public catalog; only products with status `Active` are shown.
+The catalog, product detail, cart, and checkout use the Jiandco Go API. Dashboard admin edits are reflected on the public catalog; only products with status `Active` are shown. Product colors are custom per product and each color can have its own preview image from `cdn.jiandco.id`.
 
 ## Deployment
 

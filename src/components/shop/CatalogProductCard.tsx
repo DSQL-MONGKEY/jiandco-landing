@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { formatPrice } from "../../brand";
-import { useCatalog } from "../../context/CatalogContext";
+import { useCatalog } from "../../context/use-catalog";
 import { resolveMediaUrl, type CatalogProduct } from "../../lib/api";
 
 type Props = {
@@ -10,7 +10,13 @@ type Props = {
 export default function CatalogProductCard({ product }: Props) {
   const { data } = useCatalog();
   const collection = data?.collections.find((item) => item.id === product.collection);
-  const primaryImage = product.images[0];
+  const primaryImage = product.colors?.[0]?.image?.src
+    ? product.colors[0].image
+    : product.images[0];
+  const colorLabel =
+    (product.colors?.length ?? 0) > 1
+      ? `${product.colors.length} warna`
+      : (product.colors?.[0]?.name ?? product.color);
 
   return (
     <Link
@@ -42,7 +48,7 @@ export default function CatalogProductCard({ product }: Props) {
       </div>
       <div className="flex flex-col gap-1 pt-4">
         <p className="text-[0.54rem] font-medium tracking-[0.14em] text-muted uppercase">
-          {[collection?.label ?? "Catalog", product.color].filter(Boolean).join(" · ")}
+          {[collection?.label ?? "Catalog", colorLabel].filter(Boolean).join(" · ")}
         </p>
         <h3 className="font-display text-[clamp(1.25rem,1.7vw,1.55rem)] leading-[1.15] font-medium tracking-[-0.02em]">
           {product.name}

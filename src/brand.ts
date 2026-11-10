@@ -264,7 +264,7 @@ export const brand: Brand = {
   ],
   header: {
     ctaLabel: "Shop Now",
-    ctaHref: "#new-in",
+    ctaHref: "/catalog",
   },
   hero: {
     eyebrow: "New Collection — 01",

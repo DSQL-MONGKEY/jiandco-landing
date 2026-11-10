@@ -1,30 +1,18 @@
-import { Link } from 'react-router-dom'
-import { formatPrice } from '../brand'
-import Footer from '../components/Footer'
-import { MinusIcon, PlusIcon, TrashIcon } from '../components/Icons'
-import Seo from '../components/Seo'
-import ShopHeader from '../components/shop/ShopHeader'
-import { useCart } from '../context/CartContext'
-import { resolveMediaUrl } from '../lib/api'
+import { Link } from "react-router-dom";
+import { formatPrice } from "../brand";
+import Footer from "../components/Footer";
+import { MinusIcon, PlusIcon, TrashIcon } from "../components/Icons";
+import Seo from "../components/Seo";
+import ShopHeader from "../components/shop/ShopHeader";
+import { useCart } from "../context/use-cart";
+import { resolveMediaUrl } from "../lib/api";
 
 export default function CartPage() {
-  const {
-    lines,
-    count,
-    whatsappTotal,
-    shopeeTotal,
-    updateQuantity,
-    removeItem,
-  } = useCart()
+  const { lines, count, whatsappTotal, shopeeTotal, updateQuantity, removeItem } = useCart();
 
   return (
     <>
-      <Seo
-        title="Keranjang — Ji&Co"
-        description="Keranjang belanja Ji&Co."
-        path="/cart"
-        noindex
-      />
+      <Seo title="Keranjang — Ji&Co" description="Keranjang belanja Ji&Co." path="/cart" noindex />
       <ShopHeader />
       <main id="main" className="min-h-[60vh] bg-main">
         <section className="container-page py-12 sm:py-16">
@@ -35,10 +23,7 @@ export default function CartPage() {
                 Keranjang <em className="italic text-accent">kamu.</em>
               </h1>
             </div>
-            <Link
-              className="text-link hidden sm:inline-flex"
-              to="/catalog"
-            >
+            <Link className="text-link hidden sm:inline-flex" to="/catalog">
               Lanjut belanja
             </Link>
           </div>
@@ -60,7 +45,7 @@ export default function CartPage() {
                   return (
                     <div
                       className="flex gap-4 border-b border-line py-5 sm:gap-6"
-                      key={`${line.productId}-${line.size}`}
+                      key={`${line.productId}-${line.colorId}-${line.size}`}
                     >
                       <Link
                         className="w-24 shrink-0 overflow-hidden bg-main sm:w-28"
@@ -76,7 +61,7 @@ export default function CartPage() {
                         <div className="flex items-start justify-between gap-4">
                           <div>
                             <p className="text-[0.54rem] tracking-[0.14em] text-muted uppercase">
-                              {line.color} · Size {line.size}
+                              {line.colorName} · Size {line.size}
                             </p>
                             <Link
                               className="mt-1 font-display text-[1.35rem] leading-[1.1] hover:text-accent"
@@ -97,6 +82,7 @@ export default function CartPage() {
                               onClick={() =>
                                 updateQuantity(
                                   line.productId,
+                                  line.colorId,
                                   line.size,
                                   line.quantity - 1,
                                 )
@@ -115,6 +101,7 @@ export default function CartPage() {
                               onClick={() =>
                                 updateQuantity(
                                   line.productId,
+                                  line.colorId,
                                   line.size,
                                   line.quantity + 1,
                                 )
@@ -127,7 +114,7 @@ export default function CartPage() {
                           <button
                             className="grid size-8 place-items-center text-muted transition-colors hover:text-accent"
                             type="button"
-                            onClick={() => removeItem(line.productId, line.size)}
+                            onClick={() => removeItem(line.productId, line.colorId, line.size)}
                             aria-label={`Hapus ${line.name}`}
                           >
                             <TrashIcon size={15} />
@@ -135,7 +122,7 @@ export default function CartPage() {
                         </div>
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
 
@@ -150,26 +137,18 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between gap-4">
                     <span className="text-muted">Total via WhatsApp</span>
-                    <span className="font-semibold">
-                      {formatPrice(whatsappTotal)}
-                    </span>
+                    <span className="font-semibold">{formatPrice(whatsappTotal)}</span>
                   </div>
                   <div className="flex justify-between gap-4 text-[0.72rem] text-muted">
                     <span>Harga Shopee</span>
-                    <span className="line-through">
-                      {formatPrice(shopeeTotal)}
-                    </span>
+                    <span className="line-through">{formatPrice(shopeeTotal)}</span>
                   </div>
                 </div>
                 <p className="mt-4 border-t border-line pt-4 text-[0.68rem] leading-[1.6] text-muted">
-                  Harga spesial WhatsApp sudah diterapkan. Checkout Shopee
-                  tersedia untuk pembayaran instan via QRIS, ShopeePay, dan
-                  PayLater.
+                  Harga spesial WhatsApp sudah diterapkan. Checkout Shopee tersedia untuk pembayaran
+                  instan via QRIS, ShopeePay, dan PayLater.
                 </p>
-                <Link
-                  className="btn btn-brand mt-6 min-h-12 w-full"
-                  to="/checkout"
-                >
+                <Link className="btn btn-brand mt-6 min-h-12 w-full" to="/checkout">
                   Lanjut ke Checkout
                 </Link>
                 <Link
@@ -185,5 +164,5 @@ export default function CartPage() {
       </main>
       <Footer />
     </>
-  )
+  );
 }

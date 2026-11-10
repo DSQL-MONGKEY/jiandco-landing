@@ -9,12 +9,21 @@ export type CatalogCollection = {
   description: string;
 };
 
+export type CatalogColor = {
+  id: string;
+  name: string;
+  hexCode: string;
+  image?: CatalogImage;
+  sizes: string[];
+};
+
 export type CatalogProduct = {
   id: string;
   slug: string;
   name: string;
   collection: string;
   color: string;
+  colors: CatalogColor[];
   whatsappPrice: number;
   shopeePrice: number;
   images: CatalogImage[];

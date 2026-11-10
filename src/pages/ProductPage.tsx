@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { brand, formatPrice } from "../brand";
-import { useCatalog } from "../context/CatalogContext";
+import { useCatalog } from "../context/use-catalog";
 import { resolveMediaUrl } from "../lib/api";
 import { getSiteUrl } from "../lib/seo";
 import Footer from "../components/Footer";
@@ -9,7 +9,7 @@ import { MinusIcon, PlusIcon, WhatsAppIcon } from "../components/Icons";
 import Seo from "../components/Seo";
 import PromoBanner from "../components/shop/PromoBanner";
 import ShopHeader from "../components/shop/ShopHeader";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/use-cart";
 
 export default function ProductPage() {
   const { slug } = useParams();
@@ -17,8 +17,10 @@ export default function ProductPage() {
   const { addItem } = useCart();
   const { data, loading, error } = useCatalog();
   const [size, setSize] = useState("");
+  const [colorId, setColorId] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [imageIndex, setImageIndex] = useState(0);
+  const [showColorImage, setShowColorImage] = useState(true);
   const [added, setAdded] = useState(false);
 
   if (loading) {
@@ -48,9 +50,13 @@ export default function ProductPage() {
 
   const collection = data?.collections.find((item) => item.id === product.collection);
   const collectionLabel = collection?.label ?? "Ji&Co";
+  const colors = product.colors ?? [];
+  const selectedColor = colors.find((item) => item.id === colorId) ?? colors[0];
+  const availableSizes = selectedColor?.sizes?.length ? selectedColor.sizes : product.sizes;
+  const effectiveSize = availableSizes.includes(size) ? size : (availableSizes[0] ?? "");
   const images = product.images;
-  const image = images[imageIndex] ?? images[0];
-  const effectiveSize = product.sizes.includes(size) ? size : (product.sizes[0] ?? "");
+  const colorImage = selectedColor?.image?.src ? selectedColor.image : undefined;
+  const image = (showColorImage ? colorImage : undefined) ?? images[imageIndex] ?? images[0];
   const saving = product.shopeePrice - product.whatsappPrice;
   const siteUrl = getSiteUrl();
   const productUrl = `${siteUrl}/catalog/${product.slug}`;
@@ -67,8 +73,8 @@ export default function ProductPage() {
         url: productUrl,
         brand: { "@type": "Brand", name: brand.name },
         category: collectionLabel,
-        color: product.color,
-        size: product.sizes.join(", "),
+        color: colors.map((item) => item.name).join(", ") || product.color,
+        size: availableSizes.join(", "),
         offers: {
           "@type": "Offer",
           priceCurrency: "IDR",
@@ -109,13 +115,13 @@ export default function ProductPage() {
   };
 
   const handleAdd = () => {
-    addItem(product, effectiveSize, quantity);
+    addItem(product, effectiveSize, quantity, selectedColor);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2200);
   };
 
   const handleBuyNow = () => {
-    addItem(product, effectiveSize, quantity);
+    addItem(product, effectiveSize, quantity, selectedColor);
     navigate("/checkout");
   };
 
@@ -173,7 +179,10 @@ export default function ProductPage() {
                   }`}
                   key={item.src}
                   type="button"
-                  onClick={() => setImageIndex(index)}
+                  onClick={() => {
+                    setImageIndex(index);
+                    setShowColorImage(false);
+                  }}
                   aria-label={`Lihat foto ${index + 1}`}
                 >
                   <img
@@ -190,7 +199,9 @@ export default function ProductPage() {
 
           <div className="lg:sticky lg:top-28 lg:self-start">
             <p className="text-[0.58rem] font-semibold tracking-[0.16em] text-muted uppercase">
-              {[collection?.label ?? "Ji&Co", product.color].filter(Boolean).join(" · ")}
+              {[collection?.label ?? "Ji&Co", selectedColor?.name ?? product.color]
+                .filter(Boolean)
+                .join(" · ")}
             </p>
             <h1 className="mt-2 font-display text-[clamp(2.6rem,4.8vw,4.4rem)] leading-[0.98] font-normal tracking-[-0.03em]">
               {product.name}
@@ -212,16 +223,54 @@ export default function ProductPage() {
               {product.description}
             </p>
 
+            {colors.length > 0 && (
+              <div className="mt-7">
+                <div className="flex items-center justify-between">
+                  <p className="text-[0.58rem] font-semibold tracking-[0.16em] uppercase">Warna</p>
+                  <span className="text-[0.58rem] text-muted">
+                    {selectedColor?.name ?? product.color}
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {colors.map((color) => (
+                    <button
+                      className={`flex min-h-10 items-center gap-2 border px-3 text-[0.65rem] transition-colors ${
+                        selectedColor?.id === color.id
+                          ? "border-burgundy bg-burgundy text-main"
+                          : "border-line hover:border-burgundy"
+                      }`}
+                      key={color.id}
+                      type="button"
+                      onClick={() => {
+                        setColorId(color.id);
+                        setImageIndex(0);
+                        setShowColorImage(true);
+                      }}
+                      aria-pressed={selectedColor?.id === color.id}
+                    >
+                      <span
+                        className="size-4 rounded-full border border-black/10"
+                        style={{ backgroundColor: color.hexCode || "transparent" }}
+                      />
+                      {color.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="mt-7">
               <div className="flex items-center justify-between">
                 <p className="text-[0.58rem] font-semibold tracking-[0.16em] uppercase">Ukuran</p>
-                <span className="text-[0.58rem] text-muted">S–XL</span>
+                <span className="text-[0.58rem] text-muted">
+                  {availableSizes.length > 0 ? availableSizes.join(" · ") : "—"}
+                </span>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
-                {product.sizes.length === 0 ? (
+                {availableSizes.length === 0 ? (
                   <p className="text-[0.72rem] text-muted">Ukuran belum tersedia.</p>
                 ) : (
-                  product.sizes.map((option) => (
+                  availableSizes.map((option) => (
                     <button
                       className={`grid min-h-11 min-w-12 place-items-center border px-3 text-[0.7rem] transition-colors ${
                         effectiveSize === option

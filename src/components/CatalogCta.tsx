@@ -1,13 +1,13 @@
-import { Link } from 'react-router-dom'
-import { catalogCta as fallbackCta } from '../catalog'
-import { useCatalog } from '../context/CatalogContext'
-import { resolveMediaUrl } from '../lib/api'
-import { ArrowUpRight } from './Icons'
-import Reveal from './Reveal'
+import { Link } from "react-router-dom";
+import { catalogCta as fallbackCta } from "../catalog";
+import { useCatalog } from "../context/use-catalog";
+import { resolveMediaUrl } from "../lib/api";
+import { ArrowUpRight } from "./Icons";
+import Reveal from "./Reveal";
 
 export default function CatalogCta() {
-  const { data } = useCatalog()
-  const cta = data?.cta
+  const { data } = useCatalog();
+  const cta = data?.cta;
   const catalogCta = {
     eyebrow: cta?.eyebrow || fallbackCta.eyebrow,
     title: cta?.title || fallbackCta.title,
@@ -18,7 +18,7 @@ export default function CatalogCta() {
     imageAlt: fallbackCta.imageAlt,
     secondaryImage: resolveMediaUrl(cta?.secondaryImageUrl) || fallbackCta.secondaryImage,
     secondaryImageAlt: fallbackCta.secondaryImageAlt,
-  }
+  };
 
   return (
     <section className="section-space bg-white">
@@ -26,8 +26,7 @@ export default function CatalogCta() {
         <Reveal>
           <p className="eyebrow">{catalogCta.eyebrow}</p>
           <h2 className="section-title">
-            {catalogCta.title}{' '}
-            <em className="italic text-accent">{catalogCta.titleAccent}</em>
+            {catalogCta.title} <em className="italic text-accent">{catalogCta.titleAccent}</em>
           </h2>
           <p className="mt-6 max-w-[28rem] text-[0.94rem] leading-[1.8] text-muted">
             {catalogCta.description}
@@ -58,5 +57,5 @@ export default function CatalogCta() {
         </Reveal>
       </div>
     </section>
-  )
+  );
 }

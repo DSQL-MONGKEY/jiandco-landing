@@ -1,18 +1,18 @@
-import { brand } from '../../brand'
-import { useCatalog } from '../../context/CatalogContext'
-import { ArrowUpRight, WhatsAppIcon } from '../Icons'
+import { brand } from "../../brand";
+import { useCatalog } from "../../context/use-catalog";
+import { ArrowUpRight, WhatsAppIcon } from "../Icons";
 
 type Props = {
-  compact?: boolean
-}
+  compact?: boolean;
+};
 
 export default function PromoBanner({ compact = false }: Props) {
-  const { data } = useCatalog()
-  const promo = data?.promo
-  if (!promo) return null
+  const { data } = useCatalog();
+  const promo = data?.promo;
+  if (!promo) return null;
   const href = `https://wa.me/${brand.contact.whatsapp}?text=${encodeURIComponent(
     brand.contact.whatsappMessage,
-  )}`
+  )}`;
 
   if (compact) {
     return (
@@ -21,9 +21,7 @@ export default function PromoBanner({ compact = false }: Props) {
           <p className="text-[0.56rem] font-semibold tracking-[0.16em] text-burgundy uppercase">
             {promo.badge}
           </p>
-          <p className="mt-1 text-[0.78rem] leading-[1.6]">
-            {promo.description}
-          </p>
+          <p className="mt-1 text-[0.78rem] leading-[1.6]">{promo.description}</p>
         </div>
         <a
           className="text-link shrink-0 text-burgundy"
@@ -35,7 +33,7 @@ export default function PromoBanner({ compact = false }: Props) {
           <ArrowUpRight size={13} />
         </a>
       </div>
-    )
+    );
   }
 
   return (
@@ -49,20 +47,13 @@ export default function PromoBanner({ compact = false }: Props) {
           <h2 className="mt-3 font-display text-[clamp(1.8rem,3vw,2.5rem)] leading-[1.05] font-normal">
             {promo.title}
           </h2>
-          <p className="mt-2 text-[0.82rem] leading-[1.65] text-main/70">
-            {promo.description}
-          </p>
+          <p className="mt-2 text-[0.82rem] leading-[1.65] text-main/70">{promo.description}</p>
         </div>
-        <a
-          className="btn btn-cream min-h-12 shrink-0"
-          href={href}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a className="btn btn-cream min-h-12 shrink-0" href={href} target="_blank" rel="noreferrer">
           <WhatsAppIcon size={15} />
           Chat Admin
         </a>
       </div>
     </section>
-  )
+  );
 }

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { brand } from "../brand";
-import { useCatalog } from "../context/CatalogContext";
+import { useCatalog } from "../context/use-catalog";
 import { getSiteUrl } from "../lib/seo";
 import Footer from "../components/Footer";
 import Seo from "../components/Seo";
@@ -13,7 +13,7 @@ export default function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { data, loading, error, reload } = useCatalog();
   const collections = data?.collections ?? [];
-  const catalogProducts = data?.products ?? [];
+  const catalogProducts = useMemo(() => data?.products ?? [], [data?.products]);
   const selected = searchParams.get("collection");
   const activeCollection = collections.some((item) => item.id === selected) ? selected : "all";
 
