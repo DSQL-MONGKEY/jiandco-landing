@@ -6,6 +6,7 @@ import {
   Routes,
   useLocation,
 } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import { brand } from './brand'
 import { CatalogProvider } from './context/CatalogContext'
 import { CartProvider } from './context/CartContext'
@@ -54,6 +55,7 @@ export default function App() {
     <BrowserRouter>
       <CatalogProvider>
         <CartProvider>
+        <Toaster position="top-center" />
         <div
           className="min-h-screen overflow-x-clip bg-main font-body text-ink"
           style={themeStyle}

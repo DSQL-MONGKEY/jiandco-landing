@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { brand, formatPrice } from "../brand";
 import { useCatalog } from "../context/use-catalog";
@@ -7,6 +8,7 @@ import { getSiteUrl } from "../lib/seo";
 import Footer from "../components/Footer";
 import { MinusIcon, PlusIcon, WhatsAppIcon } from "../components/Icons";
 import Seo from "../components/Seo";
+import CatalogErrorState from "../components/shop/CatalogErrorState";
 import PromoBanner from "../components/shop/PromoBanner";
 import ShopHeader from "../components/shop/ShopHeader";
 import { useCart } from "../context/use-cart";
@@ -15,7 +17,7 @@ export default function ProductPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const { data, loading, error } = useCatalog();
+  const { data, loading, error, reload } = useCatalog();
   const [size, setSize] = useState("");
   const [colorId, setColorId] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -38,9 +40,14 @@ export default function ProductPage() {
     return (
       <>
         <ShopHeader />
-        <main className="container-page py-16">
-          <p className="text-muted">Gagal memuat produk: {error}</p>
+        <main id="main" className="min-h-[60vh] bg-main">
+          <CatalogErrorState
+            title="Produk belum bisa dimuat."
+            description="Koneksi ke katalog sedang terganggu. Coba muat ulang, atau hubungi admin lewat WhatsApp bila masih belum tampil."
+            onRetry={reload}
+          />
         </main>
+        <Footer />
       </>
     );
   }
@@ -116,6 +123,9 @@ export default function ProductPage() {
 
   const handleAdd = () => {
     addItem(product, effectiveSize, quantity, selectedColor);
+    toast.success("Ditambahkan ke keranjang", {
+      description: `${product.name} · ${selectedColor?.name ?? product.color} · ${effectiveSize}`,
+    });
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2200);
   };

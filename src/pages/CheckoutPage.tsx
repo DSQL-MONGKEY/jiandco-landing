@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { brand, formatPrice } from "../brand";
+import { formatPrice } from "../brand";
 import { shopeeStoreUrl } from "../catalog";
 import Footer from "../components/Footer";
 import { ArrowUpRight, WhatsAppIcon } from "../components/Icons";
@@ -8,20 +8,12 @@ import PromoBanner from "../components/shop/PromoBanner";
 import ShopHeader from "../components/shop/ShopHeader";
 import { useCart } from "../context/use-cart";
 import { resolveMediaUrl } from "../lib/api";
+import { buildWhatsAppOrderUrl } from "../lib/whatsapp";
 
 export default function CheckoutPage() {
   const { lines, whatsappTotal, shopeeTotal } = useCart();
 
-  const orderText = lines
-    .map(
-      (line) =>
-        `- ${line.name} (${line.colorName}) size ${line.size} x${line.quantity} - ${formatPrice(line.whatsappPrice * line.quantity)}`,
-    )
-    .join("\n");
-
-  const whatsappHref = `https://wa.me/${brand.contact.whatsapp}?text=${encodeURIComponent(
-    `Halo ${brand.name}, saya ingin checkout pesanan berikut:\n${orderText}\n\nTotal via WhatsApp: ${formatPrice(whatsappTotal)}`,
-  )}`;
+  const whatsappHref = buildWhatsAppOrderUrl(lines, whatsappTotal);
 
   return (
     <>

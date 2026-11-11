@@ -5,6 +5,7 @@ import { useCatalog } from "../context/use-catalog";
 import { getSiteUrl } from "../lib/seo";
 import Footer from "../components/Footer";
 import Seo from "../components/Seo";
+import CatalogErrorState from "../components/shop/CatalogErrorState";
 import CatalogProductCard from "../components/shop/CatalogProductCard";
 import PromoBanner from "../components/shop/PromoBanner";
 import ShopHeader from "../components/shop/ShopHeader";
@@ -106,11 +107,8 @@ export default function CatalogPage() {
     return (
       <>
         <ShopHeader />
-        <main className="container-page py-16">
-          <p className="text-muted">Gagal memuat katalog: {error}</p>
-          <button className="btn btn-brand mt-6 min-h-11" type="button" onClick={reload}>
-            Coba lagi
-          </button>
+        <main id="main" className="min-h-[60vh] bg-main">
+          <CatalogErrorState onRetry={reload} />
         </main>
         <Footer />
       </>
